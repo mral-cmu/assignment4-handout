@@ -31,14 +31,14 @@ pip install cprint numpy matplotlib opencv-python
 ```
 
 ## Basic Collision Avoidance and Random Exploration
-<video style="width:100%" controls>
-  <source src="./assets/random.mp4" type="video/mp4">
-</video>
+
+https://github.com/mral-cmu/assignment4-handout/assets/7077226/2f327114-a62f-482c-b587-b78b0181fd32
 
 <img src="./assets/random-traj.png" width="400" height="400"/>
 
 ## Frontier-based Exploration
-<video src="./assets/closest-point-frontier.mp4"/>
+
+https://github.com/mral-cmu/assignment4-handout/assets/7077226/700a7f5f-dcd1-4937-9d71-b615e79e3153
 
 <img src="./assets/closest-point-frontier-traj.png" width="400" height="400"/>
 
