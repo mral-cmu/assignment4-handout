@@ -129,7 +129,8 @@ point on the frontier.
 > [!IMPORTANT]
 > **Task 3.1 (20 points)** Implement a frontier-based planner for exploration in the `selection_policy`
 > within the `FrontierPlanner` class. Declare helper functions within the class as you need. The return type
-> needs to be the same as in Task 2.2.
+> needs to be the same as in Task 2.2. You may need to override the `update_map` function to incorporate updating
+> frontiers.
 
 For a qualitative evaluation, you can run
 ```
@@ -161,6 +162,9 @@ This is because the frontier-based method might be lacking a notion of the "util
 We will use an information-theoretic exploration method to improve further.
 
 ## Information-Theoretic Exploration
+
+## Multi-Robot Exploration
+In this section we implement a Sequential Greedy Assignment (SGA) strategy for exploration using three robots.
 
 ## Grading with AutoLab
 Assuming you are in this assignment directory, run this command after completing your solutions:
