@@ -7,7 +7,7 @@ exploration using occupancy grid maps.
 1. Do not publicly share your solution (using GitHub or otherwise)
 2. Collaboration is encouraged but you should write the final code on your own.
 
-### Setup
+### 0. Setup
 This repository uses Git LFS. Perform the following in a terminal on your computer.
 
 ```bash
@@ -56,7 +56,21 @@ Please complete the following task as part of the setup.
 > the `scikit-image` library. However, make sure you pass the `test_traversal` test from Assignment 2
 > after fixing your `traverse` implementation (either on your own or through standard library functions).
 
-## A Simple Motion Primitive Library
+To measure the exploration progress, it is beneficial to track how the entropy of the occupancy grid map
+changes over time.
+
+> [!IMPORTANT]
+> **Task 0.2 (5 points)** Implement the functions `cell_entropy` and `map_entropy` in `Grid2D` class from
+> `mapper_py/data_structures/grid.py`
+
+> [!NOTE]
+> To check your implementation for Task 0.2, you can use the script `entropy_test.py`. If the implementation is
+> correct, you will see the output:
+> ```
+> [Task 0.2]: Full Credit.
+> ```
+
+## 1. A Simple Motion Primitive Library
 > [!NOTE]
 > No implementation required in this section. However, this information is important to read and it is
 > crucial to understand when working on implementing the motion planners.
@@ -74,7 +88,7 @@ This motion primitive library has been implemented for through the classes `Simp
 and `PrimitiveLibraryGenerator` in `exploration.py`. Please read through the docstrings of these classes
 to understand the provided functionality.
 
-## Take Random Actions and Avoid Collisions
+## 2. Take Random Actions and Avoid Collisions
 Using the motion primitive library, let us create a simple motion planning setup for exploration.
 Take a look at the class `ExplorationPlanner` in `exploration.py` and read through the docstrings.
 
@@ -87,7 +101,7 @@ The first task is to ensure safety by avoiding actions that may result in collis
 > To check your implementation for Task 2.1, you can use `collision_test.py`. If the implementation is correct,
 > you will see the output:
 > ```
-> Collision tests passed.
+> [Task 2.1]: Full Credit.
 > ```
 
 Now that we have the capability to avoid collisions, let us enable the robot to take random actions while
@@ -120,11 +134,11 @@ You will also see a plot for entropy of the explored map over time.
 Clearly this is not a good exploration strategy. However, we now have infrastructure to test out
 exploration planning algorithms. Let us start with implementing the frontier-based exploration method.
 
-## Frontier-based Exploration
-Take a look at the class `ClosestPointFrontierPlanner`, which is derived from the `ExplorationPlanner` class.
+## 3. Frontier-based Exploration
+Take a look at the class `FrontierPlanner`, which is derived from the `ExplorationPlanner` class.
 We will override the method `selection_policy` to implement a new one. You can use any frontier-based exploration
 method (ones studied in class or your own). We recommend using a simple strategy, such as following the closest
-point on the frontier.
+point on the frontier and using brute force search for frontier detection.
 
 > [!IMPORTANT]
 > **Task 3.1 (20 points)** Implement a frontier-based planner for exploration in the `selection_policy`
@@ -144,26 +158,44 @@ with the final trajectory of the robot being more exploratory
 
 <img src="./assets/closest-point-frontier-traj.png" width="400" height="400"/>
 
-> [!NOTE]
-> You will receive full credit for Tasks 3.1, 2.2, and 2.1 if:
+> [!IMPORTANT]
+> You will receive full credit for Tasks 3.1, 2.2, and 2.1 if the following conditions are satisfied for at
+> least one environment in `test_data/`:
 > 1. The robot never collides with the occupied space
 > 2. The robot never enters unknown space at any point during exploration
 > 3. The robot explores faster in frontier-based case compared to the random case. In other words, the final entropy of the map should be lower in the frontier case compared to the random case for the same number of timesteps (default is 200)
 
-You can change the environment using the `-env` option. The available environments in `test_data/` are
-`charrow-map`, `office`, `holes-wall`, `maze-like`, and `simple-obstacle` (default is `simple-obstacle`).
+You can run `exploration_comparison.py` to check if your solution passes these requirements for all the
+environments in `test_data/`
+```
+python exploration_comparison.py
+```
+You are expected to receive full credit if you see the output
+```
+[Tasks 3.1, 2.2, and 2.1]: Full Credit.
+```
+> [!WARNING]
+> Note that there is no possibility for partial credit in this part -- the frontier-based planner **must** perform
+> better than random planner.
 
-If you run frontier-based exploration with `maze-like`,
+The available environments in `test_data/` are `charrow-map`, `office`, `maze-like`, and `simple-obstacle`
+(default is `simple-obstacle`).
+
+For visualization, you run frontier-based exploration with `explore_test` script in this manner for any
+environment (`-env` option):
 ```
 python explore_test.py -planner_type frontier -env maze-like
 ```
-you might observe the robot getting stuck (if not for this environment, one of the other environments).
-This is because the frontier-based method might be lacking a notion of the "utility" of the frontier.
-We will use an information-theoretic exploration method to improve further.
+You might observe the robot getting "stuck" (if not for `maze-like` environment, one of the other environments).
+While performance gains can be achieved with a more complicated motion pritimives design or hierarchical
+methods, here we will use an information-theoretic exploration method to improve the exploration
+performance further without changing any other parameters involved in exploration.
 
-## Information-Theoretic Exploration
+## 4. Information-Theoretic Exploration
+In frontier-based exploration, intuitively, the robot is "pushing" the "boundary" (frontier) of the unknown
+and free space. However, it does not reason about what it might gain beyond the boundary.
 
-## Multi-Robot Exploration
+## 5. Multi-Robot Exploration
 In this section we implement a Sequential Greedy Assignment (SGA) strategy for exploration using three robots.
 
 ## Grading with AutoLab
