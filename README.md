@@ -100,6 +100,13 @@ avoiding collisions. Intuitively, this is the most "naive" way in which the robo
 > It is difficult to quantitatively test this function since the selection policy is random. We will describe
 > how this problem is graded later in the Frontier-based Exploration section.
 
+For a qualitative evaluation, you can run
+```
+python explore_test.py -planner_type random
+```
+
+By default, the maximum timesteps given to the robot for exploration is 200.
+
 You should see a confused robot trying to explore
 
 https://github.com/mral-cmu/assignment4-handout/assets/7077226/2f327114-a62f-482c-b587-b78b0181fd32
@@ -115,14 +122,43 @@ exploration planning algorithms. Let us start with implementing the frontier-bas
 
 ## Frontier-based Exploration
 Take a look at the class `ClosestPointFrontierPlanner`, which is derived from the `ExplorationPlanner` class.
-We will override the method `selection_policy` to implement a new one.
+We will override the method `selection_policy` to implement a new one. You can use any frontier-based exploration
+method (ones studied in class or your own). We recommend using a simple strategy, such as following the closest
+point on the frontier.
 
 > [!IMPORTANT]
-> **Task 3.1 (20 points)**
+> **Task 3.1 (20 points)** Implement a frontier-based planner for exploration in the `selection_policy`
+> within the `FrontierPlanner` class. Declare helper functions within the class as you need. The return type
+> needs to be the same as in Task 2.2.
+
+For a qualitative evaluation, you can run
+```
+python explore_test.py -planner_type frontier
+```
+You should see the robot exploring the environment much better than the random planner
 
 https://github.com/mral-cmu/assignment4-handout/assets/7077226/700a7f5f-dcd1-4937-9d71-b615e79e3153
 
+with the final trajectory of the robot being more exploratory
+
 <img src="./assets/closest-point-frontier-traj.png" width="400" height="400"/>
+
+> [!NOTE]
+> You will receive full credit for Tasks 3.1, 2.2, and 2.1 if:
+> 1. The robot never collides with the occupied space
+> 2. The robot never enters unknown space at any point during exploration
+> 3. The robot explores faster in frontier-based case compared to the random case. In other words, the final entropy of the map should be lower in the frontier case compared to the random case for the same number of timesteps (default is 200)
+
+You can change the environment using the `-env` option. The available environments in `test_data/` are
+`charrow-map`, `office`, `holes-wall`, `maze-like`, and `simple-obstacle` (default is `simple-obstacle`).
+
+If you run frontier-based exploration with `maze-like`,
+```
+python explore_test.py -planner_type frontier -env maze-like
+```
+you might observe the robot getting stuck (if not for this environment, one of the other environments).
+This is because the frontier-based method might be lacking a notion of the "utility" of the frontier.
+We will use an information-theoretic exploration method to improve further.
 
 ## Information-Theoretic Exploration
 
