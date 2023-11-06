@@ -12,7 +12,7 @@ This repository uses Git LFS. Perform the following in a terminal on your comput
 
 ```bash
 git clone git@github.com:mral-cmu/assignment4-handout.git
-cd assignment2-handout
+cd assignment4-handout
 git lfs install
 git lfs pull
 ```
@@ -33,17 +33,18 @@ pip install cprint numpy matplotlib opencv-python scipy scikit-learn
 We assume a point-shape robot with a size equal to one cell in the occupancy grid map. The state of
 this robot is given by `PointRobotState` in `robot.py`. As in the mapping assignment, we assume that
 the robot is equipped with a 360 degree field-of-view range sensor (e.g. 2D LiDAR) of a maximum usable
-range `2.0m` and an angular resolution of `50` rays per scan. The robot can explore various environments
+range `2.0m` and an angular resolution of `200` rays per scan. The robot can explore various environments
 provided in the `test_data/` folder.
 
 To set up this functionality correctly, we will rely on the solution to the mapping assignment (Assignment 2).
 Please complete the following task as part of the setup.
 
 > [!IMPORTANT]
-> **Task 0.1 (0 points)**: Please copy your solutions for all functions from `mapper_py/data_structures/grid.py` in
-> Assignment 2 into the file `mapper_py/data_structures/grid.py`. Similarly, copy solutions for
-> `mapper_py/data_structures/sensor.py` and `mapper_py/mapper.py` in the respective files within this assignment.
-> If you created some helper functions for your Assignment 2 solutions, make sure those are copied too.
+> **Task 0.1 (0 points)**: Please copy your solutions for all functions from `mapper_py/data_structures/grid.py`
+> in Assignment 2 into the file `mapper_py/data_structures/grid.py`. Similarly, copy solutions for
+> `mapper_py/data_structures/sensor.py` and `mapper_py/mapper.py` (except the function `update_logodds` in the
+> `Mapper` class) in the respective files within this assignment. If you created some helper functions for
+> your Assignment 2 solutions, make sure those are copied too.
 
 > [!WARNING]
 > Please do not directly copy and replace the files for the task above. Some helper functions have changed in
@@ -116,7 +117,7 @@ Now that we have the capability to avoid collisions, let us enable the robot to 
 avoiding collisions. Intuitively, this is the most "naive" way in which the robot can explore its surroundings.
 
 > [!IMPORTANT]
-> **Task 2.2 (5 points)** Implement `selection_policy` function in `ExplorationPlanner`.
+> **Task 2.2 (10 points)** Implement `selection_policy` function in `ExplorationPlanner`.
 
 > [!NOTE]
 > It is difficult to quantitatively test this function since the selection policy is random. We will describe
@@ -139,17 +140,16 @@ and the final trajectory may look like
 
 You will also see a plot for entropy of the explored map over time.
 
-Clearly this is not a good exploration strategy. However, we now have infrastructure to test out
+Clearly this is not a good exploration strategy. However, we now have the infrastructure to test out
 exploration planning algorithms. Let us start with implementing the frontier-based exploration method.
 
 ## 3. Frontier-based Exploration
 Take a look at the class `FrontierPlanner`, which is derived from the `ExplorationPlanner` class.
 We will override the method `selection_policy` to implement a new one. You can use any frontier-based exploration
-method (ones studied in class or your own). We recommend using a simple strategy, such as following the closest
-point on the frontier and using brute force search for frontier detection.
+method (ones studied in class or your own).
 
 > [!IMPORTANT]
-> **Task 3.1 (20 points)** Implement a frontier-based planner for exploration in the `selection_policy`
+> **Task 3.1 (30 points)** Implement a frontier-based planner for exploration in the `selection_policy`
 > within the `FrontierPlanner` class. Declare helper functions within the class as you need. The return type
 > needs to be the same as in Task 2.2. You may need to override the `update_map` function to incorporate updating
 > frontiers.
@@ -167,11 +167,19 @@ with the final trajectory of the robot being more exploratory
 <img src="./assets/closest-point-frontier-traj.png" width="400" height="400"/>
 
 > [!IMPORTANT]
-> You will receive full credit for Tasks 3.1, 2.2, and 2.1 if the following conditions are satisfied for at
-> least one environment in `test_data/`:
+> You will receive full credit for Tasks 3.1 and 2.2 if the following conditions are satisfied for all
+> environments in `test_data/`:
 > 1. The robot never collides with the occupied space
 > 2. The robot never enters unknown space at any point during exploration
-> 3. The robot explores faster in frontier-based case compared to the random case. In other words, the final entropy of the map should be lower in the frontier case compared to the random case for the same number of timesteps (default is 200)
+> 
+> and the following condition is satisfied for at least three environments:
+>
+> 3. The robot explores faster in frontier-based case compared to the random case. In other words, the average
+> entropy in the frontier-based case should be lower than the random case.
+
+> [!WARNING]
+> There is no possibility for partial credit in Tasks 3.1 and 2.2. The frontier-based planner
+> **must** outperform random planner in at least three environments.
 
 You can run `exploration_comparison.py` to check if your solution passes these requirements for all the
 environments in `test_data/`
@@ -182,9 +190,7 @@ You are expected to receive full credit if you see the output
 ```
 [Tasks 3.1, 2.2, and 2.1]: Full Credit.
 ```
-> [!WARNING]
-> Note that there is no possibility for partial credit in this part -- the frontier-based planner **must** perform
-> better than random planner.
+You will also see plots for 
 
 The available environments in `test_data/` are `charrow-map`, `office`, `maze-like`, and `simple-obstacle`
 (default is `simple-obstacle`).
@@ -192,7 +198,7 @@ The available environments in `test_data/` are `charrow-map`, `office`, `maze-li
 For visualization, you run frontier-based exploration with `explore_test` script in this manner for any
 environment (`-env` option):
 ```
-python explore_test.py -planner_type frontier -env maze-like
+python explore_test.py -planner_type frontier -env charrow-map
 ```
 
 ## 4. Information-Theoretic Exploration
@@ -200,22 +206,55 @@ In frontier-based exploration, intuitively, the robot is "pushing" the "boundary
 and free space. However, it does not reason about what it might gain beyond the boundary. To improve the
 performance further, we will not incorporate "information gain" as a "utility" of the frontier.
 
-Take a look at the class `MIPlanner`. You will notice that (1) it is derived from the `FrontierPlanner` class
-and (2) it takes the sensor object as an additional argument to the constructor. The sensor model is required
+Take a look at the class `MIPlanner`. You will notice that the sensor model is required
 to compute information that a potential observation at the frontier location may provide about the
 map. In the simplest implementation, if we assume a perfect sensor, this value corresponds to the total entropy
 of the cells overlapping the observation.
 
+> [!IMPORTANT]
+> **Task 4.1 (20 points)** Complete the `compute_mi` function inside the `MIPlanner`. This function must compute
+> the expected decrease in entropy if the sensor perfectly measures the occupancy values of the cells.
+> Some notes/hints:
+> 1. Occlusion handling: If the input position is not in the grid or it is occupied, the return value is zero
+> and the reward must not be computed further along this ray.
+> 2. Due to rule 1 and the assumption of a perfect sensor, the MI just becomes cumulative sum of the entropy
+> contained in the cells traversed by the sensor observation at the input position.
 
+You can use the script `mi_reward_map_test.py` to test your solution for Task 4.1. A correct implementation
+should yield:
+```
+[Task 4.1]: Full Credit.
+```
+Using this reward function, we now write the planner
+> [!IMPORTANT]
+> **Task 4.2 (30 points)** Implement `selection_policy` function inside `MIPlanner`. Leverage `compute_mi`
+> completed in Task 4.1
 
-## 5. Multi-Robot Exploration
-In this section we implement a Sequential Greedy Assignment (SGA) strategy for exploration using three robots.
+> [!IMPORTANT]
+> You will receive full credit for Tasks 4.2 if the following conditions are satisfied for all
+> environments in `test_data/`:
+> 1. The robot never collides with the occupied space
+> 2. The robot never enters unknown space at any point during exploration
+> 
+> the following condition is satisfied for at least three environments:
+>
+> 3. The robot explores faster in this case compared to the random case. In other words, the average
+> entropy in the information-theoretic case should be lower than the random case.
+>
+> and the following condition is satisfied for at least two environments:
+> 
+> 4. The robot explores faster in this case compared to the frontier-based case. In other words, the average
+> entropy in the information-theoretic case should be lower than the frontier-based case.
+
+> [!NOTE]
+> There is a possibility for partial credit in Task 4.2. The score is assigned as (let maximum be 1.0):
+> `final_score = 0.2 * (# times MIPlanner faster than Random + # times MIPlanner faster than Frontier)`.
 
 ## Grading with AutoLab
 Assuming you are in this assignment directory, run this command after completing your solutions:
 
 ```
-tar -C . -cvf handin.tar mapper_py explore_py
+tar -C . -cvf handin.tar explore_py
 ```
 
 Submit `handin.tar` on Autolab.
