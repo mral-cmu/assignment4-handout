@@ -1,0 +1,6 @@
+explore_py/test_data/simple-obstacle.png filter=lfs diff=lfs merge=lfs -text
+explore_py/test_data/charrow-map.png filter=lfs diff=lfs merge=lfs -text
+explore_py/test_data/maze-like.png filter=lfs diff=lfs merge=lfs -text
+explore_py/test_data/office.png filter=lfs diff=lfs merge=lfs -text
+explore_py/mapper_py/test_data/office.png filter=lfs diff=lfs merge=lfs -text
+explore_py/mapper_py/test_data/simple_obstacle.png filter=lfs diff=lfs merge=lfs -text
