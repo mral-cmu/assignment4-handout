@@ -85,12 +85,20 @@ red arrow, contain the information about the starting position and the direction
 In this assignment, we constrain the robot to be able to move at most one cell along these directions.
 
 This motion primitive library has been implemented for through the classes `SimplePrimitive`
-and `PrimitiveLibraryGenerator` in `exploration.py`. Please read through the docstrings of these classes
+and `PrimitiveLibrary` in `exploration.py`. Please read through the docstrings of these classes
 to understand the provided functionality.
+
+> [!WARNING]
+> You are not allowed to modify the `SimplePrimitive` and `PrimitiveLibrary` classes. The motion primitive
+> design is assumed to be given.
 
 ## 2. Take Random Actions and Avoid Collisions
 Using the motion primitive library, let us create a simple motion planning setup for exploration.
 Take a look at the class `ExplorationPlanner` in `exploration.py` and read through the docstrings.
+
+> [!WARNING]
+> You are not allowed to modify the `take_action` method inside the `ExplorationPlanner` class or any
+> of its derived classes. The robot is assumed to always move one cell at a time along the chosen primitive.
 
 The first task is to ensure safety by avoiding actions that may result in collision with the environment.
 
@@ -121,7 +129,7 @@ python explore_test.py -planner_type random
 
 By default, the maximum timesteps given to the robot for exploration is 200.
 
-You should see a confused robot trying to explore
+You should see a confused robot trying to (safely) figure out what exists in the world...
 
 https://github.com/mral-cmu/assignment4-handout/assets/7077226/2f327114-a62f-482c-b587-b78b0181fd32
 
@@ -186,14 +194,19 @@ environment (`-env` option):
 ```
 python explore_test.py -planner_type frontier -env maze-like
 ```
-You might observe the robot getting "stuck" (if not for `maze-like` environment, one of the other environments).
-While performance gains can be achieved with a more complicated motion pritimives design or hierarchical
-methods, here we will use an information-theoretic exploration method to improve the exploration
-performance further without changing any other parameters involved in exploration.
 
 ## 4. Information-Theoretic Exploration
 In frontier-based exploration, intuitively, the robot is "pushing" the "boundary" (frontier) of the unknown
-and free space. However, it does not reason about what it might gain beyond the boundary.
+and free space. However, it does not reason about what it might gain beyond the boundary. To improve the
+performance further, we will not incorporate "information gain" as a "utility" of the frontier.
+
+Take a look at the class `MIPlanner`. You will notice that (1) it is derived from the `FrontierPlanner` class
+and (2) it takes the sensor object as an additional argument to the constructor. The sensor model is required
+to compute information that a potential observation at the frontier location may provide about the
+map. In the simplest implementation, if we assume a perfect sensor, this value corresponds to the total entropy
+of the cells overlapping the observation.
+
+
 
 ## 5. Multi-Robot Exploration
 In this section we implement a Sequential Greedy Assignment (SGA) strategy for exploration using three robots.
