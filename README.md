@@ -250,6 +250,12 @@ Using this reward function, we now write the planner
 > There is a possibility for partial credit in Task 4.2. The score is assigned as (let maximum be 1.0):
 > `final_score = 0.2 * (# times MIPlanner faster than Random + # times MIPlanner faster than Frontier)`.
 
+Just like the frontier-based case, you can run
+```
+python exploration_comparison.py
+```
+to see your score or `explore_test.py` for debugging.
+
 ## Grading with AutoLab
 Assuming you are in this assignment directory, run this command after completing your solutions:
 
