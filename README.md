@@ -191,7 +191,7 @@ You are expected to receive full credit if you see the output
 ```
 [Tasks 3.1, 2.2, and 2.1]: Full Credit.
 ```
-You will also see plots for 
+You will also see plots for the entropy reduction over timesteps.
 
 The available environments in `test_data/` are `charrow-map`, `office`, `maze-like`, and `simple-obstacle`
 (default is `simple-obstacle`).
