@@ -48,7 +48,8 @@ Please complete the following task as part of the setup.
 
 > [!WARNING]
 > Please do not directly copy and replace the files for the task above. Some helper functions have changed in
-> the `mapper_py` folder provided within this assignment compared to the previous assignment.
+> the `mapper_py` folder provided within this assignment compared to the previous assignment. You should
+> carefully replace the parts that have been labelled as `TODO`.
 
 > [!NOTE]
 > If you could not get `traverse` function to work in Assignment 2,
