@@ -67,3 +67,14 @@ class Mapper:
 
         # TODO: Assignment 2, Problem 1.3
         raise NotImplementedError
+
+    def add_obs(self, pos):
+        """Add the observation at the input position to the map."""
+        rays = self.sensor.rays(pos)
+        es = []
+        for r in rays:
+            success, e = self.add_ray(r, self.sensor.max_range)
+            if success:
+                es.append(e)
+
+        return es
