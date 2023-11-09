@@ -48,7 +48,8 @@ Please complete the following task as part of the setup.
 
 > [!WARNING]
 > Please do not directly copy and replace the files for the task above. Some helper functions have changed in
-> the `mapper_py` folder provided within this assignment compared to the previous assignment.
+> the `mapper_py` folder provided within this assignment compared to the previous assignment. You should
+> carefully replace the parts that have been labelled as `TODO`.
 
 > [!NOTE]
 > If you could not get `traverse` function to work in Assignment 2,
@@ -79,7 +80,8 @@ changes over time.
 Let us equip our point robot with a simple library of motion primitives that enables the robot to move
 in an 8-connected grid. For an illustration, consider this scenario:
 
-![connected](https://github.com/mral-cmu/assignment4-handout/assets/7077226/cc6059ab-01df-43b1-90e6-54cd346e8944)
+![connected](https://github.com/mral-cmu/assignment4-handout/assets/7077226/67dbc238-c883-4b12-ac5c-14645505df6d)
+
 
 Here, the robot is in the position shown in red in the occupancy grid. The motion primitives, shown by
 red arrow, contain the information about the starting position and the direction in which the robot can move.
@@ -132,7 +134,7 @@ By default, the maximum timesteps given to the robot for exploration is 200.
 
 You should see a confused robot trying to (safely) figure out what exists in the world...
 
-https://github.com/mral-cmu/assignment4-handout/assets/7077226/2f327114-a62f-482c-b587-b78b0181fd32
+https://github.com/mral-cmu/assignment4-handout/assets/7077226/3c1137bf-143e-4d62-a1e7-e010262f3e12
 
 and the final trajectory may look like
 
@@ -160,7 +162,7 @@ python explore_test.py -planner_type frontier
 ```
 You should see the robot exploring the environment much better than the random planner
 
-https://github.com/mral-cmu/assignment4-handout/assets/7077226/700a7f5f-dcd1-4937-9d71-b615e79e3153
+https://github.com/mral-cmu/assignment4-handout/assets/7077226/6f7ba18e-fa90-4388-88f5-3bc045e417c6
 
 with the final trajectory of the robot being more exploratory
 
@@ -190,7 +192,7 @@ You are expected to receive full credit if you see the output
 ```
 [Tasks 3.1, 2.2, and 2.1]: Full Credit.
 ```
-You will also see plots for 
+You will also see plots for the entropy reduction over timesteps.
 
 The available environments in `test_data/` are `charrow-map`, `office`, `maze-like`, and `simple-obstacle`
 (default is `simple-obstacle`).
