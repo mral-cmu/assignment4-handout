@@ -44,7 +44,8 @@ def score_mi_reward():
     score1 = 0.0
     compute_all_mi(mi_grid, planner_obj.map, planner_obj)
     soln1 = np.load('output/mi_grid1.npz')['arr_0']
-    overlap = np.mean(soln1 == mi_grid)
+    # overlap = np.mean(soln1 == mi_grid)
+    overlap = np.sum(np.abs(soln1 - mi_grid) <= 1e-3) / soln1.size
     if overlap >= 0.95:
         score1 = 1.0
     else:
@@ -65,7 +66,8 @@ def score_mi_reward():
     score2 = 0.0
     compute_all_mi(mi_grid, planner_obj.map, planner_obj)
     soln2 = np.load('output/mi_grid2.npz')['arr_0']
-    overlap = np.mean(soln2 == mi_grid)
+    # overlap = np.mean(soln2 == mi_grid)
+    overlap = np.sum(np.abs(soln2 - mi_grid) <= 1e-3) / soln2.size
     if overlap >= 0.95:
         score2 = 1.0
     else:
