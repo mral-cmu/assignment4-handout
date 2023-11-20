@@ -72,7 +72,6 @@ def score_mi_reward():
         score2 = 1.0
     else:
         score2 = copy(overlap)
-    np.savez('output/mi_grid2.npz', mi_grid)
     plot_obj.set_data(mi_grid)
     plt.draw()
     plt.pause(2.0)
